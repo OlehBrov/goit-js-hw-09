@@ -19,6 +19,7 @@ if(isActive === true){
         bodyRef.style.backgroundColor = getRandomHexColor();  
         }, 1000)
         isActive = false;
+        startBtn.disabled = true;
 }
 return;
     
@@ -27,5 +28,6 @@ return;
 function stopColors(){
     clearInterval(timerId)
     isActive = true;
+    startBtn.disabled = false;
 
   }
