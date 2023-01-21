@@ -10,6 +10,7 @@ const daysValueRef = document.querySelector('[data-days]');
 const hoursValueRef = document.querySelector('[data-hours]');
 const minutesValueRef = document.querySelector('[data-minutes]');
 const secondsValueRef = document.querySelector('[data-seconds]');
+const timerBox = document.querySelector('.timer')
 const currentDate = Date.now();
 let timerId = null;
 let isActive = true;
@@ -28,7 +29,10 @@ const options = {
     onClose(selectedDates) {
       userSelectedDate = new Date(selectedDates[0]).getTime();
       isActive = true;
+      timerBox.classList.remove('incorrect__timer')
       checkDate(userSelectedDate);
+      timerBox.classList.add('running__timer')
+      
    
     },
     onOpen(){
@@ -40,7 +44,8 @@ const options = {
 flatpickr("#datetime-picker", options);
 function checkDate(){
   if(currentDate >= userSelectedDate){
-    Notiflix.Notify.warning('You selected incorrect date');
+    timerBox.classList.add('incorrect__timer')
+    Notiflix.Notify.warning('Ви вибрали не вірну дату. Оберіть дату з майбутнього!');
 
   }
 }
@@ -51,6 +56,7 @@ function countdown(){
     dateDifference -= COUNT_DOWN_INTERVAL;
     convertMs(dateDifference);
     stopTimer()
+
    
    }, 1000)
    isActive = false;
