@@ -18,7 +18,7 @@ let userSelectedDate = 0;
 let dateDifference = 0;
 const COUNT_DOWN_INTERVAL = 1000;
 const STOP_COUNT = 1000;
-
+Notiflix.Notify.init({position: 'left-top', fontSize: '18px',});
 startBtn.addEventListener('click', countdown)
 
 const options = {
@@ -29,6 +29,7 @@ const options = {
     onClose(selectedDates) {
       userSelectedDate = new Date(selectedDates[0]).getTime();
       isActive = true;
+      startBtn.disabled = false;
       timerBox.classList.remove('incorrect__timer')
       checkDate(userSelectedDate);
       timerBox.classList.add('running__timer')
@@ -36,7 +37,8 @@ const options = {
    
     },
     onOpen(){
-      clearInterval(timerId)
+      clearInterval(timerId);
+      timerBox.classList.remove('running__timer');
 
     }
   };
@@ -46,10 +48,16 @@ function checkDate(){
   if(currentDate >= userSelectedDate){
     timerBox.classList.add('incorrect__timer')
     Notiflix.Notify.warning('Ви вибрали не вірну дату. Оберіть дату з майбутнього!');
-
+    startBtn.disabled = true;
+return;
   }
 }
 function countdown(){
+  if(currentDate >= userSelectedDate) {
+    Notiflix.Notify.warning('Ви вибрали не вірну дату. Оберіть дату з майбутнього!');
+    defaulView()
+    return;
+  }
   if(isActive){
     dateDifference = userSelectedDate - currentDate;
     timerId = setInterval(() => {
@@ -66,7 +74,9 @@ function countdown(){
 }
 
 function stopTimer(){
-  if(dateDifference <= STOP_COUNT){
+  if(dateDifference < STOP_COUNT){
+    Notiflix.Notify.success('Час закінчився');
+    timerBox.classList.remove('running__timer');
     clearInterval(timerId)
 
   }
@@ -92,7 +102,7 @@ function convertMs(ms) {
   }
 
   function addLeadingZero(value) {
-    
+    console.log(value)
    return value.toString().padStart(2, '0');
     
    };  
@@ -104,3 +114,8 @@ function convertMs(ms) {
   secondsValueRef.textContent = addLeadingZero(seconds);
  }
 
+function defaulView(){
+  daysValueRef.textContent;
+  hoursValueRef.textContent;
+  minutesValueRef.textContent;
+  secondsValueRef.textContent;}
