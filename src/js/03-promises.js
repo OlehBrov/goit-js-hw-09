@@ -1,70 +1,59 @@
 import Notiflix from 'notiflix';
 
-refs = {
-  form: document.querySelector('.form'),
-  submitBtn: document.querySelector('button')
-}
+Notiflix.Notify.init({fontSize: '18px',});
 
-const userData = {};
-let promiseCounter = 1;
-let timeOutId = null;
-let intervalId = null;
 
-refs.form.addEventListener('input', storeData);
-refs.submitBtn.addEventListener('click', onSubmit)
+const form = document.querySelector('.form');
+const submitBtn = document.querySelector('button');
 
-function storeData(e){
- userData[e.target.name] = e.target.value;
- console.log(userData.delay)
-
-}
-console.log(userData)
-console.log(userData.delay)
-
-function onSubmit(e){
-  e.preventDefault();
-  // if(userData.amount < promiseCounter) {
-  //   return;
-  // }
-
-timeOutId = setTimeout (() => {
-  delayedPromise()
-  }, userData.delay);
-
-if (userData.amount === promiseCounter){
-  clearInterval(intervalId)
+let userData = {
+  delay: 0,
 };
+let positionCounter = 0;
+let intervalId = null;
+const delay = userData.delay;
+let delayTime = Number(userData.delay);
 
-  intervalId = setInterval(() => {
-    intervalPromise
-  }, userData.step); 
- 
+
+
+form.addEventListener('input', userInputSave);
+submitBtn.addEventListener('click', buildPromises)
+
+function userInputSave(e){
+  userData[e.target.name] = e.target.value;
 }
 
-function delayedPromise(){
-  createPromise(promiseCounter, userData.step);
-  promiseCounter += 1;
-  clearTimeout(timeOutId)
+function buildPromises(e){
+  e.preventDefault();
+  setTimeout(() => {
+
+    createPromise(userData.amount, userData.step);
+    
+  }, userData.delay)
 }
 
-function intervalPromise(){
-  createPromise(promiseCounter, userData.step);
-  promiseCounter += 1;
-}
 
-function createPromise(position, delay) {
-  const shouldResolve = Math.random() > 0.3;
-  if (shouldResolve) {
-    console.log(`✅ Fulfilled promise ${position} in ${delay}ms`); 
-  } else {
-    console.log(`❌ Rejected promise ${position} in ${delay}ms`);
+function createPromise(position, delay){
+  return new Promise((resolve, reject) => {
+        intervalId = setInterval(() => {
+        positionCounter +=1;
+        delayTime += Number(delay);
+
+        const shouldResolve = Math.random() > 0.3;
+          if(shouldResolve){
+            resolve (Notiflix.Notify.success(`✅ Fulfilled promise ${positionCounter} in ${delayTime}ms`));
+          } else {
+            reject(Notiflix.Notify.warning(`❌ Rejected promise ${positionCounter} in ${delayTime}ms`));
+          }
+          
+          
+          if(positionCounter === Number(userData.amount) || Number(position) === positionCounter){
+            clearInterval(intervalId)}
+        },delay)
+    })    
   }
-}
+  
 
-// createPromise(2, 1500)
-//   .then(({ position, delay }) => {
-//     console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
-//   })
-//   .catch(({ position, delay }) => {
-//     console.log(`❌ Rejected promise ${position} in ${delay}ms`);
-//   });
+  createPromise(4, 2500).then(
+  result => {Notiflix.Notify.success(result)}, 
+  error => {Notiflix.Notify.warning(error)})
